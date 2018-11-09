@@ -1,4 +1,20 @@
-
+Vue.component('blog-images', {
+    props: ['name', 'description', 'url', 'iframe'],
+    template: `
+                    <div class="col-lg-4 col-sm-6 portfolio-item"  >
+                        <div class="card h-100">
+                            <a href="#"><img class="card-img-top" v-bind:src="url" alt=""></a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                <a href="#">{{name}} </a>
+                                </h4>
+                                <p class="card-text">{{description}} </p>
+                            </div>
+                        </div>
+                        <div class="fb-share-button" v-bind:data-href="url" data-layout="button_count" data-size="large" data-mobile-iframe="false"><a target="_blank" v-bind:href="iframe" class="fb-xfbml-parse-ignore">Bagikan</a></div>
+                    </div>
+                    `
+})
 
 var app = new Vue({
     el:"#app",
@@ -9,7 +25,12 @@ var app = new Vue({
         role: 'admin',
         user: {},
         isLogin: false,
-        file : null
+        file : null,
+        images: []
+    },
+    created: function(){
+        this.getImages(),
+        this.checkToken()
     },
 
     methods: {
@@ -101,9 +122,22 @@ var app = new Vue({
             localStorage.clear()
             this.isLogin = false
         },
+        getImages: function(){
+            axios
+                .get('http://localhost:3000/images')
+                .then((response)=>{
+                    this.images = response.data
+                })
+                .catch(function(error){
+                    console.log(error)
+                })
+        },
+        generateFbButton:function(url){
+            
+           return `https://www.facebook.com/plugins/share_button.php?href=${url}&layout=button_count&size=large&mobile_iframe=false&width=98&height=28&appId" width="98" height="28" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media` 
+        }
     },
 
-    created : function(){
-        this.checkToken()
-    }
 })
+
+
