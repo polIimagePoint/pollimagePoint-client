@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta property="og:url"           content="https://www.facebook.com/duhabduh" />
+    <meta property="og:type"          content="website" />
+    <meta property="og:title"         content="Your Website Title" />
+    <meta property="og:description"   content="Your description" />
+    <meta property="og:image"         content="https://www.your-domain.com/path/image.jpg" />
+    <title>pollimagePoint</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/modern-business.css" rel="stylesheet">
+    <!--Axios-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+  </head>
+
+  <body>
+    <div id="app">
+        <div id="fb-root"></div>
+        <script>
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <!-- Navigation -->
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
+          <div class="container">
+            <a class="navbar-brand" href="index.html">pollimagePoint</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="#" v-if="role=='admin'" v-on:click="pageChanger(escapePage)">{{escapePage}}</a>
+                </li>
+    
+              </ul>
+            </div>
+          </div>
+        </nav>
+    
+        <header v-if="page =='home'">
+          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner" role="listbox">
+              <!-- Slide One - Set the background image for this slide in the line below -->
+              <div class="carousel-item active" style="background-image: url('http://placehold.it/1900x1080')">
+                <div class="carousel-caption d-none d-md-block">
+                  <h3>First Slide</h3>
+                  <p>This is a description for the first slide.</p>
+                </div>
+              </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </header>
+    
+        <!-- Page Content for user-->
+        <div class="container" v-if="page=='home'">
+    
+          <h1 class="my-4">Welcome to Poll Image Point</h1>
+    
+            <div class="row">   
+              <blog-images v-for="image in images" v-bind:name="image.name" v-bind:url="image.url" v-bind:description="image.description" v-bind:iframe="generateFbButton(image.url)">
+              </blog-images>
+            </div>
+
+    
+          <hr>
+        </div>
+        <!-- /.container -->
+        
+        <!-- Page Content for Admin -->
+        <div class="container" v-if="role=='admin' && page =='admin-panel'">    
+          <!-- Content Row -->
+          <div class="row">
+            <!-- Sidebar Column -->
+            <div class="col-lg-3 mb-4">
+              <div class="list-group">
+                <a href="" class="list-group-item" v-if="isLogin === true">Upload New Picture</a>
+                <a href="" class="list-group-item" v-if="isLogin === true" v-on:click="signOut">Sign Out</a>
+              </div>
+            </div>
+            <!-- Content Column -->
+            <div class="col-lg-9 mb-4">
+              <!--Login form-->
+                <form v-if="isLogin === false" class="px-4 py-3">
+                    <h2>Login</h2>
+                  <div class="form-group">
+                    <label for="exampleDropdownFormEmail1">Email address</label>
+                    <input type="email" class="form-control" v-model="user.email" placeholder="email@example.com">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleDropdownFormPassword1">Password</label>
+                    <input type="password" class="form-control" v-model="user.password" placeholder="Password">
+                  </div>
+                  <button type="submit" class="btn btn-primary" v-on:click='login'>Sign in</button>
+                </form>
+                <div class="dropdown-divider"></div>
+              <!--end of login form-->
+              <div class="form-group" v-if="isLogin === true">
+                <form>
+                    <label for="exampleInputEmail1">Upload Image</label>
+                    <br>
+                    <input type="file" name="pic" accept="image/*" @change="uploadimage($event)">
+                  </form>
+                </div>
+            </div>
+          </div>
+          <!-- /.row -->
+    
+        </div>
+        <!-- Footer -->
+        <footer class="py-5 bg-dark">
+          <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2018</p>
+          </div>
+          <!-- /.container -->
+        </footer>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="js/vue-script.js"></script>
+
+  </body>
+
+</html>
